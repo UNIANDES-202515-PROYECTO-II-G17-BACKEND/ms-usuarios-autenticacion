@@ -1,32 +1,35 @@
-﻿from pydantic_settings import BaseSettings
+﻿import os
+from datetime import timedelta
 
-class Settings(BaseSettings):
-    SERVICE_NAME: str = "ms-compras"
-    VERSION: str = "0.1.0"
 
-    # GCP
-    GCP_PROJECT: str = "misw4301-g26"
-    GCP_REGION: str = "us-central1"
+class Settings:
 
-    # Sharding por paÃ­s (CO, MX, EC, PE)
-    DATABASE_URL_CO: str | None = None
-    DATABASE_URL_MX: str | None = None
-    DATABASE_URL_EC: str | None = None
-    DATABASE_URL_PE: str | None = None
+    SERVICE_NAME = os.getenv("SERVICE_NAME", "ms-usuarios-autenticacion")
+    VERSION = os.getenv("VERSION", "0.1.0")
 
-    # Redis
-    REDIS_URL: str | None = None
+    DB_USER = os.getenv("POSTGRES_USER", "postgres")
+    DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
+    DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
+    DB_PORT = int(os.getenv("POSTGRES_PORT", "5432"))
+    DB_NAME = os.getenv("POSTGRES_DB", "db_ms_usuarios_aut")
 
-    # Pub/Sub
-    PUBSUB_TOPIC: str | None = None
 
-    # BigQuery / Bigtable / GCS
-    BQ_DATASET: str | None = None
-    BT_INSTANCE: str | None = None
-    GCS_BUCKET: str | None = None
-    GCS_FOLDER: str | None = None
+    SQLALCHEMY_DATABASE_URI = (
+    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
 
-    class Config:
-        env_file = ".env"
+
+    DEFAULT_SCHEMA = os.getenv("DEFAULT_SCHEMA", "co")
+    COUNTRY_HEADER = os.getenv("COUNTRY_HEADER", "X-Country")
+
+
+    # JWT
+    JWT_ISSUER = os.getenv("JWT_ISSUER", "ms-usuarios-autenticacion")
+    ACCESS_EXPIRES = int(os.getenv("ACCESS_EXPIRES", "3600"))
+    REFRESH_EXPIRES = int(os.getenv("REFRESH_EXPIRES", "1209600"))
+
+    PRIVATE_KEY_PEM = os.getenv("JWT_PRIVATE_KEY_PEM")
+    PUBLIC_KEY_PEM = os.getenv("JWT_PUBLIC_KEY_PEM")
+    KEY_ID = os.getenv("JWT_KEY_ID", "kid-1")
 
 settings = Settings()
