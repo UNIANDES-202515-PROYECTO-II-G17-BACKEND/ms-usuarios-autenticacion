@@ -1,0 +1,55 @@
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from src.app import app
+from src.dependencies import get_session
+from src.domain.models import Base
+import os
+
+# --- Database Setup for Tests ---
+TEST_DB_PATH = "./test_db.sqlite"
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{TEST_DB_PATH}"
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+# --- Override get_session to control transactions during tests ---
+def override_get_session():
+    db = TestingSessionLocal()
+    try:
+        yield db
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+app.dependency_overrides[get_session] = override_get_session
+
+
+# --- Main Test Client Fixture ---
+@pytest.fixture(scope="function")
+def client():
+    Base.metadata.create_all(bind=engine)
+    with TestClient(app) as c:
+        yield c
+    Base.metadata.drop_all(bind=engine)
+
+
+# --- Final Cleanup Fixture ---
+@pytest.fixture(scope="session", autouse=True)
+def final_cleanup(request):
+    """
+    A session-scoped fixture to ensure the database file is properly cleaned up.
+    """
+    yield
+    # Close any active sessions and dispose of the engine to release file locks
+    TestingSessionLocal.close_all()
+    engine.dispose()
+    if os.path.exists(TEST_DB_PATH):
+        os.remove(TEST_DB_PATH)
