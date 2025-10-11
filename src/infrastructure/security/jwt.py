@@ -63,6 +63,7 @@ def issue_refresh_token(user_id: int) -> tuple[str, int, str]:
     jti = str(uuid.uuid4())
     payload = {
         "iss": settings.JWT_ISSUER,
+        "aud": settings.JWT_AUDIENCE, # <-- CORRECCIÓN AÑADIDA
         "sub": str(user_id),
         "iat": now,
         "exp": exp,
@@ -77,6 +78,6 @@ def decode_token(token: str):
         token, 
         PUBLIC_PEM, 
         algorithms=["RS256"], 
-        audience=settings.JWT_AUDIENCE, # <-- Validación de Audience añadida
+        audience=settings.JWT_AUDIENCE,
         options={"require": ["exp", "iat"]}
     )

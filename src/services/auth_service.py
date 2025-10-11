@@ -19,6 +19,7 @@ class AuthService:
             role=role,
             institution_name=institution_name,
         )
+        self.session.commit() # <-- COMMIT AÑADIDO
         return user, None
 
     def login(self, username: str, password: str):
@@ -36,6 +37,7 @@ class AuthService:
         )
         refresh, refresh_secs, jti_refresh = jwtsec.issue_refresh_token(user.id)
         self.repo.store_refresh(jti_refresh, user.id, refresh_secs)
+        self.session.commit() # <-- COMMIT AÑADIDO
 
         return {
             "access_token": access,
@@ -74,6 +76,7 @@ class AuthService:
             role=user.role, 
             institution_name=user.institution_name
         )
+        # No hay commit aquí, ya que solo es una lectura
         return {
             "access_token": access,
             "token_type": "Bearer",
