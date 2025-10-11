@@ -3,6 +3,7 @@ import uuid
 import jwt
 from src.config import settings
 
+# La clave secreta ahora se lee desde la configuración
 SECRET_KEY = settings.JWT_SECRET_KEY
 ALGORITHM = "HS256"
 
@@ -26,6 +27,7 @@ def issue_access_token(user_id: int, username: str, role: str, institution_name:
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token, settings.ACCESS_EXPIRES
 
+
 def issue_refresh_token(user_id: int) -> tuple[str, int, str]:
     now = int(time.time())
     exp = now + settings.REFRESH_EXPIRES
@@ -42,11 +44,13 @@ def issue_refresh_token(user_id: int) -> tuple[str, int, str]:
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token, settings.REFRESH_EXPIRES, jti
 
+
 def decode_token(token: str):
     return jwt.decode(
         token, 
         SECRET_KEY, 
         algorithms=[ALGORITHM], 
         audience=settings.JWT_AUDIENCE,
-        options={"require": ["exp", "iat"]}
+        leeway=30,
+        options={"require": ["exp"]}
     )
