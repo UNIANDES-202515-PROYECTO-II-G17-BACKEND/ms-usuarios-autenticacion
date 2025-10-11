@@ -10,7 +10,6 @@ from src.infrastructure.infrastructure import engine
 from .routes.health import router as health_router
 from src.routes import auth as auth_routes
 from src.routes import users as user_routes
-from src.routes import jwks as jwks_routes
 
 log = logging.getLogger(__name__)
 
@@ -45,4 +44,3 @@ app = FastAPI(
 app.include_router(health_router)
 app.include_router(auth_routes.router)
 app.include_router(user_routes.router)
-app.include_router(jwks_routes.router)

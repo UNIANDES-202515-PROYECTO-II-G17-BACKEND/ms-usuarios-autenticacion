@@ -14,14 +14,8 @@ async def me(request: Request):
         data = decode_token(token)
     except Exception:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
-    return {
-        "id": data.get("sub"),
-        "username": data.get("username"),
-        "scope": data.get("scope"),
-        "iss": data.get("iss"),
-        "role": data.get("role"),
-        "institution_name": data.get("institution_name"),
-        "aud": data.get("aud"),
-        "iat": data.get("iat"),
-        "exp": data.get("exp"),
-    }
+    
+    # Mapear el campo 'sub' del token al campo 'id' de la respuesta
+    data['id'] = data.get('sub')
+    
+    return data

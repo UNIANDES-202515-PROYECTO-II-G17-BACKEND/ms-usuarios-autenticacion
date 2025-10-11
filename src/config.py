@@ -25,13 +25,10 @@ class Settings:
     COUNTRY_HEADER = os.getenv("COUNTRY_HEADER", "X-Country")
 
     # JWT
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super-secret-key-for-local-dev")
     JWT_ISSUER = os.getenv("JWT_ISSUER", "ms-usuarios-autenticacion")
     ACCESS_EXPIRES = int(os.getenv("ACCESS_EXPIRES", "3600"))
     REFRESH_EXPIRES = int(os.getenv("REFRESH_EXPIRES", "1209600"))
-
-    PRIVATE_KEY_PEM = os.getenv("JWT_PRIVATE_KEY_PEM")
-    PUBLIC_KEY_PEM = os.getenv("JWT_PUBLIC_KEY_PEM")
-    KEY_ID = os.getenv("JWT_KEY_ID", "kid-1")
     JWT_AUDIENCE = os.getenv("JWT_AUDIENCE", "medisupply-api")
 
 settings = Settings()
