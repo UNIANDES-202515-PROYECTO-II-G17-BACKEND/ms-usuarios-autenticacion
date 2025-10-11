@@ -38,24 +38,23 @@ def _public_numbers_to_jwk(pubkey, kid: str):
 
 JWKS = {"keys": [_public_numbers_to_jwk(public_key, settings.KEY_ID)]}
 
-def issue_access_token(user_id: int, username: str, role: str, institution_name: str | None) -> tuple[str, int, str]:
+def issue_access_token(user_id: int, username: str, role: str, institution_name: str | None) -> tuple[str, int]:
     now = int(time.time())
     exp = now + settings.ACCESS_EXPIRES
-    jti = str(uuid.uuid4())
     payload = {
         "iss": settings.JWT_ISSUER,
+        "aud": settings.JWT_AUDIENCE,
         "sub": str(user_id),
-        "preferred_username": username,
+        "username": username,
         "iat": now,
         "exp": exp,
-        "jti": jti,
         "scope": "user",
         "role": role,
     }
     if institution_name:
         payload["institution_name"] = institution_name
     token = jwt.encode(payload, PRIVATE_PEM, algorithm="RS256", headers={"kid": settings.KEY_ID})
-    return token, settings.ACCESS_EXPIRES, jti
+    return token, settings.ACCESS_EXPIRES
 
 
 def issue_refresh_token(user_id: int) -> tuple[str, int, str]:
@@ -64,6 +63,7 @@ def issue_refresh_token(user_id: int) -> tuple[str, int, str]:
     jti = str(uuid.uuid4())
     payload = {
         "iss": settings.JWT_ISSUER,
+        "aud": settings.JWT_AUDIENCE, # <-- CORRECCIÓN AÑADIDA
         "sub": str(user_id),
         "iat": now,
         "exp": exp,
@@ -74,4 +74,10 @@ def issue_refresh_token(user_id: int) -> tuple[str, int, str]:
     return token, settings.REFRESH_EXPIRES, jti
 
 def decode_token(token: str):
-    return jwt.decode(token, PUBLIC_PEM, algorithms=["RS256"], options={"require": ["exp", "iat"]})
+    return jwt.decode(
+        token, 
+        PUBLIC_PEM, 
+        algorithms=["RS256"], 
+        audience=settings.JWT_AUDIENCE,
+        options={"require": ["exp", "iat"]}
+    )

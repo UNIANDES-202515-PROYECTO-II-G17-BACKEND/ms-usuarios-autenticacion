@@ -30,6 +30,9 @@ class MeResponse(BaseModel):
     is_active: bool | None = None
     scope: str | None = None
     iss: str | None = None
+    aud: str | None = None
+    iat: int | None = None
+    exp: int | None = None
 
 class RegisterRequest(BaseModel):
     username: str

@@ -17,15 +17,15 @@ engine = create_engine(
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-# --- Override get_session to control transactions during tests ---
+# --- Override get_session to provide a session without transaction management ---
 def override_get_session():
+    """
+    This dependency override provides a test database session.
+    Transaction management is now handled by the application code.
+    """
     db = TestingSessionLocal()
     try:
         yield db
-        db.commit()
-    except Exception:
-        db.rollback()
-        raise
     finally:
         db.close()
 
@@ -48,7 +48,6 @@ def final_cleanup(request):
     A session-scoped fixture to ensure the database file is properly cleaned up.
     """
     yield
-    # Close any active sessions and dispose of the engine to release file locks
     TestingSessionLocal.close_all()
     engine.dispose()
     if os.path.exists(TEST_DB_PATH):

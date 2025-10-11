@@ -38,6 +38,7 @@ class UserRepository:
         revoked=False,
         )
         self.session.add(rt)
+        self.session.flush() # <-- CORRECCIÓN AÑADIDA
 
 
     def get_refresh(self, jti: str) -> Optional[RefreshToken]:
