@@ -28,7 +28,7 @@ class AuthService:
         if not verify_password(password, user.password_hash):
             return None, "Credenciales inválidas"
 
-        access, access_secs, _ = jwtsec.issue_access_token(
+        access, access_secs = jwtsec.issue_access_token(
             user_id=user.id, 
             username=user.username, 
             role=user.role, 
@@ -68,7 +68,7 @@ class AuthService:
         if not user:
             return None, "Usuario inválido"
 
-        access, access_secs, _ = jwtsec.issue_access_token(
+        access, access_secs = jwtsec.issue_access_token(
             user_id=user.id, 
             username=user.username, 
             role=user.role, 

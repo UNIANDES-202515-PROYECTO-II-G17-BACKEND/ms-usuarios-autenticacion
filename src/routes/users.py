@@ -16,9 +16,12 @@ async def me(request: Request):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
     return {
         "id": data.get("sub"),
-        "username": data.get("preferred_username"),
+        "username": data.get("username"),
         "scope": data.get("scope"),
         "iss": data.get("iss"),
         "role": data.get("role"),
         "institution_name": data.get("institution_name"),
+        "aud": data.get("aud"),
+        "iat": data.get("iat"),
+        "exp": data.get("exp"),
     }
