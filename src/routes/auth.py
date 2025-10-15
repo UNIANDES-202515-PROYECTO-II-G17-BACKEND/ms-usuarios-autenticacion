@@ -35,6 +35,11 @@ async def register(payload: RegisterRequest, session: Session = Depends(get_sess
         password=payload.password,
         role=payload.role,
         institution_name=payload.institution_name,
+        full_name=payload.full_name,
+        document_type=payload.document_type,
+        document_number=payload.document_number,
+        email=payload.email,
+        telephone=payload.telephone
     )
 
     if not user:

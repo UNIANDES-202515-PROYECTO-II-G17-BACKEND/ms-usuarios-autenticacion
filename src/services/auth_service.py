@@ -10,7 +10,9 @@ class AuthService:
         self.session = session
 
 
-    def register_if_absent(self, username: str, password: str, role: str, institution_name: str):
+    def register_if_absent(self, username: str, password: str, role: str, institution_name: str, full_name: str = None, document_type: str = None, document_number: str = None, email: str = None, telephone: str = None):
+        if role not in ["institutional_customer", "seller", "admin"]:
+            return None, "Rol inválido: [institutional_customer, seller, admin]"
         if self.repo.get_by_username(username):
             return None, "Usuario ya existe"
         user = self.repo.create_user(
@@ -18,6 +20,11 @@ class AuthService:
             password_hash=hash_password(password),
             role=role,
             institution_name=institution_name,
+            full_name=full_name,
+            document_type=document_type,
+            document_number=document_number,
+            email=email,
+            telephone=telephone
         )
         self.session.commit()
         return user, None
@@ -34,7 +41,12 @@ class AuthService:
             username=user.username, 
             role=user.role, 
             institution_name=user.institution_name,
-            is_active=user.is_active
+            is_active=user.is_active,
+            full_name=user.full_name,
+            document_type=user.document_type,
+            document_number=user.document_number,
+            email=user.email,
+            telephone=user.telephone
         )
         refresh, refresh_secs, jti_refresh = jwtsec.issue_refresh_token(user.id)
         self.repo.store_refresh(jti_refresh, user.id, refresh_secs)
@@ -76,7 +88,12 @@ class AuthService:
             username=user.username, 
             role=user.role, 
             institution_name=user.institution_name,
-            is_active=user.is_active
+            is_active=user.is_active,
+            full_name=user.full_name,
+            document_type=user.document_type,
+            document_number=user.document_number,
+            email=user.email,
+            telephone=user.telephone
         )
         return {
             "access_token": access,

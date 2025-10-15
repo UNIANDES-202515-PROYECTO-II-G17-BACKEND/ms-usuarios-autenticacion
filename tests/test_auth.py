@@ -12,7 +12,7 @@ def test_register_success(client):
         json={
             "username": "testuser",
             "password": "testpassword",
-            "role": "cliente",
+            "role": "seller",
             "institution_name": "Test Inc."
         }
     )
@@ -29,7 +29,7 @@ def test_register_existing_user(client):
     client.post(
         "/v1/auth/register",
         headers={"X-Country": "co"},
-        json={"username": "existinguser", "password": "testpassword", "role": "cliente"}
+        json={"username": "existinguser", "password": "testpassword", "role": "seller"}
     )
     response = client.post(
         "/v1/auth/register",

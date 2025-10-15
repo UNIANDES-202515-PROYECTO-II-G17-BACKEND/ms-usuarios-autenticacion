@@ -11,10 +11,15 @@ class Usuario(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(150), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
-    role = Column(String(32), nullable=False, default="cliente", index=True)
-    institution_name = Column(String(150))
+    role = Column(String(32), nullable=False, default="seller", index=True)
+    institution_name = Column(String(150), nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    full_name = Column(String(255), nullable=True)
+    document_type = Column(String(50), nullable=True)
+    document_number = Column(String(50), nullable=True)
+    email = Column(String(255), nullable=True, unique=True, index=True)
+    telephone = Column(String(50), nullable=True)
 
 class RefreshToken(Base):
     __tablename__ = "refresh_token"

@@ -7,7 +7,7 @@ from src.config import settings
 SECRET_KEY = settings.JWT_SECRET_KEY
 ALGORITHM = "HS256"
 
-def issue_access_token(user_id: int, username: str, role: str, institution_name: str | None, is_active: bool) -> tuple[str, int]:
+def issue_access_token(user_id: int, username: str, role: str, institution_name: str | None, is_active: bool, full_name: str | None, document_type: str | None, document_number: str | None, email: str | None, telephone: str | None) -> tuple[str, int]:
     now = int(time.time())
     exp = now + settings.ACCESS_EXPIRES
     payload = {
@@ -23,10 +23,19 @@ def issue_access_token(user_id: int, username: str, role: str, institution_name:
     }
     if institution_name:
         payload["institution_name"] = institution_name
+    if full_name:
+        payload["full_name"] = full_name
+    if document_type:
+        payload["document_type"] = document_type
+    if document_number:
+        payload["document_number"] = document_number
+    if email:
+        payload["email"] = email
+    if telephone:
+        payload["telephone"] = telephone
     
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token, settings.ACCESS_EXPIRES
-
 
 def issue_refresh_token(user_id: int) -> tuple[str, int, str]:
     now = int(time.time())

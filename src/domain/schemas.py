@@ -33,12 +33,22 @@ class MeResponse(BaseModel):
     aud: str | None = None
     iat: int | None = None
     exp: int | None = None
+    full_name: str | None = None
+    document_type: str | None = None
+    document_number: str | None = None
+    email: str | None = None
+    telephone: str | None = None
 
 class RegisterRequest(BaseModel):
     username: str
     password: str
     role: str
     institution_name: str | None = None
+    full_name: str | None = None
+    document_type: str | None = None
+    document_number: str | None = None
+    email: EmailStr | None = None
+    telephone: str | None = None
 
 class RegisterResponse(BaseModel):
     id: int

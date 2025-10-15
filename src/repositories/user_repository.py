@@ -23,8 +23,18 @@ class UserRepository:
         return self.session.get(Usuario, user_id)
 
 
-    def create_user(self, username: str, password_hash: str, role: str = "cliente", institution_name: str | None = None) -> Usuario:
-        user = Usuario(username=username, password_hash=password_hash, role=role, institution_name=institution_name)
+    def create_user(self, username: str, password_hash: str, role: str = "seller", institution_name: str | None = None, full_name: str | None = None, document_type: str | None = None, document_number: str | None = None, email: str | None = None, telephone: str | None = None) -> Usuario:
+        user = Usuario(
+            username=username, 
+            password_hash=password_hash, 
+            role=role, 
+            institution_name=institution_name,
+            full_name=full_name,
+            document_type=document_type,
+            document_number=document_number,
+            email=email,
+            telephone=telephone
+        )
         self.session.add(user)
         self.session.flush()
         return user
