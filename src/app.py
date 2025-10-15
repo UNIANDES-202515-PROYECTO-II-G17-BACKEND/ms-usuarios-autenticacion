@@ -1,6 +1,6 @@
 ﻿from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 import logging, sys
 
@@ -41,6 +41,16 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Middleware CORS para el caso 1 (sin cookies ni withCredentials)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 🔌 Routers
 app.include_router(health_router)
 app.include_router(auth_routes.router)
 app.include_router(user_routes.router)
