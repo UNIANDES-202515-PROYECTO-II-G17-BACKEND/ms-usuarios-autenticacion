@@ -29,6 +29,17 @@ def auth_headers(client):
     
     return {"Authorization": f"Bearer {access_token}"}
 
+@pytest.fixture
+def setup_users(client):
+    users_data = [
+        {"username": "user1", "password": "pass1", "role": "seller"},
+        {"username": "user2", "password": "pass2", "role": "admin"},
+        {"username": "user3", "password": "pass3", "role": "seller"},
+        {"username": "user4", "password": "pass4", "role": "institutional_customer"},
+    ]
+    for user in users_data:
+        client.post("/v1/auth/register", headers={"X-Country": "co"}, json=user)
+
 def test_get_me_success(client, auth_headers):
     """
     Prueba el acceso exitoso al endpoint /me con un token válido.
@@ -58,3 +69,29 @@ def test_get_me_invalid_token(client):
     response = client.get("/v1/usuarios/me", headers=headers)
     assert response.status_code == 401
     assert response.json()["detail"] == "Token inválido"
+
+def test_get_users_success(client, setup_users):
+    response = client.get("/v1/usuarios/", headers={"X-Country": "co"})
+    assert response.status_code == 200
+    assert len(response.json()) > 0
+
+def test_get_users_filter_by_role(client, setup_users):
+    response = client.get("/v1/usuarios/?role=seller", headers={"X-Country": "co"})
+    assert response.status_code == 200
+    users = response.json()
+    assert len(users) == 2
+    assert all(user['role'] == 'seller' for user in users)
+
+def test_get_users_invalid_role(client):
+    response = client.get("/v1/usuarios/?role=invalid_role", headers={"X-Country": "co"})
+    assert response.status_code == 400
+
+def test_get_users_pagination(client, setup_users):
+    response = client.get("/v1/usuarios/?offset=1&limit=2", headers={"X-Country": "co"})
+    assert response.status_code == 200
+    assert len(response.json()) == 2
+
+def test_get_users_empty_list(client):
+    # Assuming no users with role 'non_existent_role' exist
+    response = client.get("/v1/usuarios/?role=non_existent_role", headers={"X-Country": "co"})
+    assert response.status_code == 400
