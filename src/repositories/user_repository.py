@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
@@ -12,6 +12,12 @@ class UserRepository:
     def __init__(self, session: Session):
         self.session = session
 
+    def get_users(self, role: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[Usuario]:
+        stmt = select(Usuario)
+        if role:
+            stmt = stmt.where(Usuario.role == role)
+        stmt = stmt.offset(offset).limit(limit)
+        return self.session.execute(stmt).scalars().all()
 
     def get_by_username(self, username: str) -> Optional[Usuario]:
         return self.session.execute(

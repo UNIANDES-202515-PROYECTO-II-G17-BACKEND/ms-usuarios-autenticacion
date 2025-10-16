@@ -1,4 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+from datetime import datetime
 
 
 class LoginRequest(BaseModel):
@@ -54,3 +56,19 @@ class RegisterResponse(BaseModel):
     id: int
     username: str
     created_at: str
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    role: str
+    institution_name: Optional[str] = None
+    full_name: Optional[str] = None
+    document_type: Optional[str] = None
+    document_number: Optional[str] = None
+    email: Optional[EmailStr] = None
+    telephone: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
