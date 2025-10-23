@@ -10,3 +10,6 @@ class UserService:
 
     def get_users(self, role: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[Usuario]:
         return self.user_repository.get_users(role, offset=offset, limit=limit)
+
+    def get_user_by_id(self, user_id: int) -> Optional[Usuario]:
+        return self.user_repository.get_by_id(user_id)
