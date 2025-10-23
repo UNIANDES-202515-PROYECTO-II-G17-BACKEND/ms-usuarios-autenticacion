@@ -23,6 +23,14 @@ def get_users(role: Optional[str] = None, session: Session = Depends(get_session
     svc = UserService(session)
     return svc.get_users(role, offset=offset, limit=limit)
 
+@router.get("/usuario/{user_id}", response_model=UserResponse)
+def get_user(user_id: int, session: Session = Depends(get_session)):
+    svc = UserService(session)
+    user = svc.get_user_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado")
+    return user
+
 @router.get("/me", response_model=MeResponse)
 async def me(request: Request):
     auth = request.headers.get("Authorization", "")
