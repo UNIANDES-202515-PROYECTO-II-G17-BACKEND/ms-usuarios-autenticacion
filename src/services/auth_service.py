@@ -10,7 +10,7 @@ class AuthService:
         self.session = session
 
 
-    def register_if_absent(self, username: str, password: str, role: str, institution_name: str, full_name: str = None, document_type: str = None, document_number: str = None, email: str = None, telephone: str = None):
+    def register_if_absent(self, username: str, password: str, role: str, institution_name: str, full_name: str = None, document_type: str = None, document_number: str = None, email: str = None, telephone: str = None, address: str = None, city: str = None):
         if role not in ["institutional_customer", "seller", "admin"]:
             return None, "Rol inválido: [institutional_customer, seller, admin]"
         if self.repo.get_by_username(username):
@@ -24,7 +24,9 @@ class AuthService:
             document_type=document_type,
             document_number=document_number,
             email=email,
-            telephone=telephone
+            telephone=telephone,
+            address=address,
+            city=city
         )
         self.session.commit()
         return user, None
@@ -46,7 +48,9 @@ class AuthService:
             document_type=user.document_type,
             document_number=user.document_number,
             email=user.email,
-            telephone=user.telephone
+            telephone=user.telephone,
+            address=user.address,
+            city=user.city,
         )
         refresh, refresh_secs, jti_refresh = jwtsec.issue_refresh_token(user.id)
         self.repo.store_refresh(jti_refresh, user.id, refresh_secs)

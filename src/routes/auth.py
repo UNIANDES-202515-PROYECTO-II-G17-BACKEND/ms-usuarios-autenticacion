@@ -39,7 +39,9 @@ async def register(payload: RegisterRequest, session: Session = Depends(get_sess
         document_type=payload.document_type,
         document_number=payload.document_number,
         email=payload.email,
-        telephone=payload.telephone
+        telephone=payload.telephone,
+        address=payload.address,
+        city=payload.city
     )
 
     if not user:
@@ -49,4 +51,6 @@ async def register(payload: RegisterRequest, session: Session = Depends(get_sess
         id=user.id,
         username=user.username,
         created_at=user.created_at.isoformat(),
+        city=user.city,
+        address=user.address,
     )

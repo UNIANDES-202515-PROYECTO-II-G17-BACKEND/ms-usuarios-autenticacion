@@ -17,7 +17,7 @@
 
 ## Tests
 
-Requerido si aún no has inicializado el pryecto.
+Requerido si aún no has inicializado el proyecto.
 
 ```bash
     poetry lock --no-update
@@ -30,6 +30,10 @@ En caso contrario solo ejecuta
 ```
 
 Endpoints:
-- GET /health
-- GET /ready
-- 
+- GET  /health
+- GET  /ready
+- POST /v1/auth/register
+- POST /v1/auth/login
+- POST /v1/auth/refresh
+- GET  /v1/usuarios/me
+- GET  /v1/usuarios?limit=10&offset=0

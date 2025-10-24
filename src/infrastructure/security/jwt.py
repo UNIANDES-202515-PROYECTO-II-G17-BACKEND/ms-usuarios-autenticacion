@@ -7,7 +7,7 @@ from src.config import settings
 SECRET_KEY = settings.JWT_SECRET_KEY
 ALGORITHM = "HS256"
 
-def issue_access_token(user_id: int, username: str, role: str, institution_name: str | None, is_active: bool, full_name: str | None, document_type: str | None, document_number: str | None, email: str | None, telephone: str | None) -> tuple[str, int]:
+def issue_access_token(user_id: int, username: str, role: str, institution_name: str | None, is_active: bool, full_name: str | None, document_type: str | None, document_number: str | None, email: str | None, telephone: str | None, address: str | None = None, city: str | None = None) -> tuple[str, int]:
     now = int(time.time())
     exp = now + settings.ACCESS_EXPIRES
     payload = {
@@ -20,6 +20,8 @@ def issue_access_token(user_id: int, username: str, role: str, institution_name:
         "scope": "user",
         "role": role,
         "is_active": is_active,
+        "address": address,
+        "city": city,
     }
     if institution_name:
         payload["institution_name"] = institution_name

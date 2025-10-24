@@ -20,6 +20,8 @@ class Usuario(Base):
     document_number = Column(String(50), nullable=True)
     email = Column(String(255), nullable=True, unique=True, index=True)
     telephone = Column(String(50), nullable=True)
+    address = Column(String(255), nullable=True)
+    city = Column(String(50), nullable=True)
 
 class RefreshToken(Base):
     __tablename__ = "refresh_token"
