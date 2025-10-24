@@ -40,6 +40,8 @@ class MeResponse(BaseModel):
     document_number: str | None = None
     email: str | None = None
     telephone: str | None = None
+    address: str | None = None
+    city: str | None = None
 
 class RegisterRequest(BaseModel):
     username: str
@@ -51,6 +53,8 @@ class RegisterRequest(BaseModel):
     document_number: str | None = None
     email: EmailStr | None = None
     telephone: str | None = None
+    address: str | None = None
+    city : str | None = None
 
 class RegisterResponse(BaseModel):
     id: int
@@ -67,6 +71,8 @@ class UserResponse(BaseModel):
     document_number: Optional[str] = None
     email: Optional[EmailStr] = None
     telephone: Optional[str] = None
+    address: str | None = None
+    city : str | None = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 
